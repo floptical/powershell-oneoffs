@@ -1,5 +1,6 @@
 # setup_openssh.ps1
 # Documentation on openssh for windows: https://github.com/PowerShell/Win32-OpenSSH/wiki/OpenSSH-utility-scripts-to-fix-file-permissions
+# Docs on the repair scripts: https://github.com/PowerShell/Win32-OpenSSH/wiki/OpenSSH-utility-scripts-to-fix-file-permissions
 param (
     [switch]$use_proxy
 )
