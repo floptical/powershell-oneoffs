@@ -30,13 +30,27 @@ if ($use_proxy -eq $true) {
     }
 }
 
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
+# Nothing I do to download via the proxy works in powershell. The city is crippled by the proxy.
+# Download the installer yourself.
+#$password = Read-Host -Prompt 'Input your AD password'
+
+#$source = "https://chocolatey.org/install.ps1'"
+#$dest = "~/chocolatey-install.ps1"
+#$WebClient = New-Object System.Net.WebClient
+#$WebProxy = New-Object System.Net.WebProxy("http://proxy.phila.gov:8080",$true)
+#$Credentials = New-Object Net.NetworkCredential("roland.macdavid",$password,"domain.local")
+#$Credentials = $Credentials.GetCredential("http://proxy.phila.gov","8080", "KERBEROS");
+#$WebProxy.Credentials = $Credentials
+#$WebClient.Proxy = $WebProxy
+#$WebClient.DownloadFile($source,$dest)
+
+#Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Test to see if this fails.
 $(Get-Command choco.exe).Name
 if($? -eq $false) {
-	Write-Host "Choco didn't install!"
+	Write-Host "Choco is not installed!"
 	Exit 1
 }
 
@@ -66,9 +80,9 @@ Write-Host "Configuring SSH configs.."
 cd C:\PROGRA~1\OpenSSH-Win64
 cp .\OpenSSHUtils.psm1 C:\Windows\System32\WindowsPowerShell\v1.0\Modules\
 Import-Module C:\Windows\System32\WindowsPowerShell\v1.0\Modules\OpenSSHUtils.psm1
-Repair-SshdHostKeyPermission -FilePath C:\Windows\System32\OpenSSH\ssh_host_ed25519_key
+Repair-SshdHostKeyPermission -FilePath C:\ProgramData\ssh\ssh_host_ed25519_key -Confirm:$false
 
-FixHostFilePermissions.ps1 -Confirm:$false
+./FixHostFilePermissions.ps1 -Confirm:$false
 
 # You'll need to make your own sshd_config and service. There is no sshd_config by default, and the existing sshd service doesn't reference a config file.
 # See my customized options below
@@ -84,10 +98,11 @@ if ( -Not $(Test-Path C:\PROGRA~1\OpenSSH-Win64\sshd_config) )
 
 # Can also add in an " -E C:\ProgramData\ssh\logs\sshd.log" to get logs, remember to remove it after.
 # To remove a service, you must do it from an admin cmd.exe, "sc delete openssh_custom"
-
 Write-Host "Creating SSH service config and starting.."
-if ( -Not $(Get-service opensshd_custom).Name )
-{
+try {
+    $(Get-service opensshd_custom).Name
+}
+catch {
     New-Service -Name "opensshd_custom" -BinaryPathName "C:\PROGRA~1\OpenSSH-Win64\sshd.exe -f C:\PROGRA~1\OpenSSH-Win64\sshd_config"
 }
 
