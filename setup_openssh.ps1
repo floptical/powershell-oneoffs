@@ -100,7 +100,7 @@ if ( -Not $(Test-Path C:\PROGRA~1\OpenSSH-Win64\sshd_config) )
 # so opensshd will use this file:  __PROGRAMDATA__/ssh/administrators_authorized_keys
 # So place your public key in there, then you must fix permissions otherwise it'll still refuse to use it. Do these commands:
 #Import-Module C:\Windows\System32\WindowsPowerShell\v1.0\Modules\OpenSSHUtils.psm1
-#Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys
+#Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys -Confirm:$false
 
 # Can also add in an " -E C:\ProgramData\ssh\logs\sshd.log" to get logs, remember to remove it after.
 # To remove a service, you must do it from an admin cmd.exe, "sc delete openssh_custom"
@@ -121,7 +121,7 @@ Get-service ssh*
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Service sshd -Enabled True -Direction Inbound -Protocol TCP -Action Allow -Profile Domain
 
 Write-Host "OpenSSH installed! Please place your public key for your administrative user here: C:\ProgramData\ssh\administrators_authorized_keys"
-Write-Host "Once you've done that, properly set permissions by running: 'Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys'"
+Write-Host "Once you've done that, properly set permissions by running: 'Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys' -Confirm:$false"
 # Reenable choco confirmations
 choco feature disable -n=allowGlobalConfirmation
 cd ~
