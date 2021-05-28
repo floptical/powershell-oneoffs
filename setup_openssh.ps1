@@ -90,6 +90,10 @@ if ( -Not $(Test-Path C:\PROGRA~1\OpenSSH-Win64\sshd_config) )
 {
     cp sshd_config_default sshd_config
     Repair-SshdConfigPermission -filepath C:\PROGRA~1\OpenSSH-Win64\sshd_config -Confirm:$false
+    # Find the passwordauth line and disable it
+    $line = Get-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config | Select-String "PasswordAuthentication" | Select-Object -ExpandProperty Line
+    $content = Get-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config
+    $content | ForEach-Object {$_ -replace $line,"PasswordAuthencation no"} | Set-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config
 }
 
 #We're logging in as gisscripts, which is an adminstrative user
