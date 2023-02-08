@@ -30,12 +30,15 @@ if ($use_proxy -eq $true) {
     }
 }
 
+if ($use_proxy -eq $false) {
+    [System.Net.Http.HttpClient]::DefaultProxy = New-Object System.Net.WebProxy($null)
+}
 
-# Nothing I do to download via the proxy works in powershell. The city is crippled by the proxy.
-# Download the installer yourself.
+# Nothing I do to download via the proxy works in powershell. Oh well. Keeping commented below
+# in case I ever figure it out.
+# Download the chocho installer yourself.
 #$password = Read-Host -Prompt 'Input your AD password'
-
-#$source = "https://chocolatey.org/install.ps1'"
+#$source = "https://chocolatey.org/install.ps1'"    x
 #$dest = "~/chocolatey-install.ps1"
 #$WebClient = New-Object System.Net.WebClient
 #$WebProxy = New-Object System.Net.WebProxy("http://proxy.phila.gov:8080",$true)
@@ -50,7 +53,7 @@ if ($use_proxy -eq $true) {
 # Test to see if this fails.
 $(Get-Command choco.exe).Name
 if($? -eq $false) {
-	Write-Host "Choco is not installed!"
+	Write-Host "Choco is not installed! Please install it first, run this script: https://chocolatey.org/install.ps1"
 	Exit 1
 }
 
