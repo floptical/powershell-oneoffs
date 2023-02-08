@@ -96,7 +96,7 @@ if ( -Not $(Test-Path C:\PROGRA~1\OpenSSH-Win64\sshd_config) )
     # Find the passwordauth line and disable it
     $line = Get-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config | Select-String "PasswordAuthentication" | Select-Object -ExpandProperty Line
     $content = Get-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config
-    $content | ForEach-Object {$_ -replace $line,"PasswordAuthencation no"} | Set-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config
+    $content | ForEach-Object {$_ -replace $line,"PasswordAuthentication no"} | Set-Content C:\PROGRA~1\OpenSSH-Win64\sshd_config
 }
 
 #We're logging in as gisscripts, which is an adminstrative user
@@ -124,7 +124,7 @@ Get-service ssh*
 New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Service sshd -Enabled True -Direction Inbound -Protocol TCP -Action Allow -Profile Domain
 
 Write-Host "OpenSSH installed! Please place your public key for your administrative user here: C:\ProgramData\ssh\administrators_authorized_keys"
-Write-Host "Once you've done that, properly set permissions by running: 'Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys' -Confirm:$false"
+Write-Host "Once you've done that, properly set permissions by running: 'Repair-SshdConfigPermission -filepath C:\programdata\ssh\administrators_authorized_keys -Confirm:\$false"
 # Reenable choco confirmations
 choco feature disable -n=allowGlobalConfirmation
 cd ~
