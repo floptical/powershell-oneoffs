@@ -116,7 +116,7 @@ catch {
 }
 
 Start-Service opensshd_custom
-Set-Service –Name opensshd_custom –StartupType "Automatic" 
+Set-Service -Name opensshd_custom -StartupType "Automatic" 
 Start-service ssh-agent
 
 Get-service ssh*
